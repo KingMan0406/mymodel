@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.mymodel.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_description"
+            app:destination="@id/navigation_description" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_basket"
+            app:destination="@id/navigation_basket" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_basket"
+        android:name="com.example.mymodel.ui.dashboard.BasketFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_basket" >
+        <action
+            android:id="@+id/action_navigation_basket_to_navigation_payment"
+            app:destination="@id/navigation_payment" />
+        <action
+            android:id="@+id/action_navigation_basket_to_navigation_home"
+            app:destination="@id/navigation_home" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_description"
+        android:name="com.example.mymodel.ui.notifications.DescriptionFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_description" >
+        <action
+            android:id="@+id/action_navigation_description_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_payment"
+        android:name="com.example.mymodel.payment.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" >
+        <action
+            android:id="@+id/action_navigation_payment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+</navigation>
