@@ -24,20 +24,20 @@
         android:id="@+id/text_dashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Your personal basket:"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
-        android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
-        />
+        android:text="Your personal basket:"
+        android:textSize="20sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_basket"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_height="285dp"
         android:orientation="horizontal"
-        tools:listitem="@layout/item_product"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_product" />
     <ImageView
         android:id="@+id/place_holder"
         android:layout_width="380dp"
@@ -77,13 +77,12 @@
 
     </LinearLayout>
     <Button
-        android:id="@+id/btn_pay"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        app:cornerRadius="20dp"
-        android:backgroundTint="#C1D1A6"
+        android:id="@+id/btn_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
-        android:text="pay"
+        android:backgroundTint="#C1D1A6"
+        android:text="Оформить заказ"
         android:textColor="@color/black"/>
+
 </LinearLayout>

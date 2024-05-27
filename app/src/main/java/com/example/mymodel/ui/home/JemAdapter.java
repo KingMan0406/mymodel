@@ -1,4 +1,5 @@
 package com.example.mymodel.ui.home;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-
 import com.example.mymodel.R;
 import com.example.mymodel.databinding.ItemProductBinding;
 import com.example.mymodel.models.ModelM;
@@ -22,16 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JemAdapter extends RecyclerView.Adapter<JemAdapter.ViewHolder> {
-    ItemProductBinding binding;
-    Context context;
-    List<ModelM> list;
-    ArrayList<ModelM> selected_list = new ArrayList<>();
-    ArrayList<ModelM> getSelected_intoBasketList = new ArrayList<>();
-    NavController navController;
 
-    public JemAdapter(Context context, List<ModelM> list) {
+    private Context context;
+    private List<ModelM> list;
+    private ArrayList<ModelM> selected_list = new ArrayList<>();
+    private ArrayList<ModelM> getSelected_intoBasketList = new ArrayList<>();
+    private NavController navController;
+    private OnQuantityChangeListener quantityChangeListener;
+    private boolean isBasketView;
+
+    public JemAdapter(Context context, List<ModelM> list, OnQuantityChangeListener quantityChangeListener, boolean isBasketView) {
         this.context = context;
         this.list = list;
+        this.quantityChangeListener = quantityChangeListener;
+        this.isBasketView = isBasketView;
     }
 
     public ArrayList<ModelM> getSelected_intoBasketList() {
@@ -41,18 +45,14 @@ public class JemAdapter extends RecyclerView.Adapter<JemAdapter.ViewHolder> {
     @NonNull
     @Override
     public JemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding=ItemProductBinding
-                .inflate(LayoutInflater.from(parent.getContext()),parent,false);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemProductBinding binding = ItemProductBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull JemAdapter.ViewHolder holder, int position) {
         holder.onBind(list.get(position));
-
-    }
-    public  Double getItemPrice(int position){
-        return list.get(position).getModelPrice();
     }
 
     @Override
@@ -61,40 +61,58 @@ public class JemAdapter extends RecyclerView.Adapter<JemAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ItemProductBinding binding;
+
+        private ItemProductBinding binding;
+
         public ViewHolder(@NonNull ItemProductBinding itemView) {
             super(itemView.getRoot());
-            this.binding =itemView;
+            this.binding = itemView;
         }
 
         public void onBind(ModelM modelM) {
             binding.nameProductCard.setText(modelM.getModelTitle());
             binding.priceCard.setText(String.valueOf(modelM.getModelPrice()));
             binding.descriptionCard.setText(modelM.getModelDescription());
+            binding.productQuantity.setText(String.valueOf(modelM.getQuantity()));
 
-            Glide.with(context)
-                    .load(list.get(getAdapterPosition()).getModelImage())
-                    .placeholder(R.drawable.back_shop)
-                    .error(R.drawable.back_shop)
-                    .into(binding.imageCard);
-            binding.btnZoom.setOnClickListener(v->{
-                selected_list.add(modelM);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("see more",selected_list);
-                navController= Navigation.findNavController((Activity) itemView.getContext(), R.id.nav_host_fragment_activity_main);
-                navController.navigate(R.id.navigation_description,bundle);
-                Log.e("TAG","pass data to descroptio !!!");
-            });
-            itemView.setOnClickListener(v1->{
-                if(binding.tovarFavoriteCheck.getVisibility()==View.INVISIBLE){
-                    binding.tovarFavoriteCheck.setVisibility(View.VISIBLE);
-                    getSelected_intoBasketList.add(modelM);
-                }else {
-                    binding.tovarFavoriteCheck.setVisibility(View.INVISIBLE);
-                    getSelected_intoBasketList.remove(modelM);
-                }
-            });
+            Glide.with(context).load(modelM.getModelImage()).into(binding.imageCard);
+
+            if (isBasketView) {
+                binding.btnIncrease.setVisibility(View.VISIBLE);
+                binding.btnDecrease.setVisibility(View.VISIBLE);
+                binding.productQuantity.setVisibility(View.VISIBLE);
+                binding.btnIncrease.setOnClickListener(v -> {
+                    modelM.setQuantity(modelM.getQuantity() + 1);
+                    notifyItemChanged(getAdapterPosition());
+                    quantityChangeListener.onQuantityChanged();
+                });
+                binding.btnDecrease.setOnClickListener(v -> {
+                    if (modelM.getQuantity() > 1) {
+                        modelM.setQuantity(modelM.getQuantity() - 1);
+                        notifyItemChanged(getAdapterPosition());
+                        quantityChangeListener.onQuantityChanged();
+                    }
+                });
+            } else {
+                binding.btnIncrease.setVisibility(View.GONE);
+                binding.btnDecrease.setVisibility(View.GONE);
+                binding.textRemaining.setVisibility(View.VISIBLE);
+                binding.productQuantity.setVisibility(View.VISIBLE); // Показываем количество
+                binding.getRoot().setOnClickListener(v -> {
+                    if (getSelected_intoBasketList.contains(modelM)) {
+                        getSelected_intoBasketList.remove(modelM);
+                        binding.tovarFavoriteCheck.setVisibility(View.INVISIBLE);
+                    } else {
+                        modelM.setQuantity(1); // Устанавливаем количество в 1 при добавлении в корзину
+                        getSelected_intoBasketList.add(modelM);
+                        binding.tovarFavoriteCheck.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
         }
     }
 
+    public interface OnQuantityChangeListener {
+        void onQuantityChanged();
+    }
 }

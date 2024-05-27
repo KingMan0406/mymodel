@@ -13,38 +13,35 @@ import java.io.Serializable;
 public class ModelM implements Parcelable, Serializable {
     @SerializedName("id")
     @Expose
-    int  modelId;
+    private int modelId;
+
     @SerializedName("title")
     @Expose
-    String modelTitle;
+    private String modelTitle;
+
     @SerializedName("price")
     @Expose
-    Double modelPrice;
+    private Double modelPrice;
+
     @SerializedName("description")
     @Expose
-    String modelDescription;
+    private String modelDescription;
 
     @SerializedName("image")
     @Expose
-    String modelImage;
+    private String modelImage;
 
-    public ModelM(int modelId, String modelTitle, Double modelPrice, String modelDescription, String modelImage) {
+    @SerializedName("count")
+    @Expose
+    private int quantity;
+
+    public ModelM(int modelId, String modelTitle, Double modelPrice, String modelDescription, String modelImage, int quantity) {
         this.modelId = modelId;
         this.modelTitle = modelTitle;
         this.modelPrice = modelPrice;
         this.modelDescription = modelDescription;
         this.modelImage = modelImage;
-    }
-
-    @Override
-    public String toString() {
-        return "ModelM{" +
-                "modelId=" + modelId +
-                ", modelTitle='" + modelTitle + '\'' +
-                ", modelPrice=" + modelPrice +
-                ", modelDescription='" + modelDescription + '\'' +
-                ", modelImage='" + modelImage + '\'' +
-                '}';
+        this.quantity = quantity;
     }
 
     protected ModelM(Parcel in) {
@@ -57,6 +54,7 @@ public class ModelM implements Parcelable, Serializable {
         }
         modelDescription = in.readString();
         modelImage = in.readString();
+        quantity = in.readInt();
     }
 
     public static final Creator<ModelM> CREATOR = new Creator<ModelM>() {
@@ -71,44 +69,27 @@ public class ModelM implements Parcelable, Serializable {
         }
     };
 
-    public int getModelId() {
-        return modelId;
-    }
-
-    public void setModelId(int modelId) {
-        this.modelId = modelId;
-    }
 
     public String getModelTitle() {
         return modelTitle;
     }
-
-    public void setModelTitle(String modelTitle) {
-        this.modelTitle = modelTitle;
-    }
-
     public Double getModelPrice() {
         return modelPrice;
     }
-
-    public void setModelPrice(Double modelPrice) {
-        this.modelPrice = modelPrice;
-    }
-
     public String getModelDescription() {
         return modelDescription;
-    }
-
-    public void setModelDescription(String modelDescription) {
-        this.modelDescription = modelDescription;
     }
 
     public String getModelImage() {
         return modelImage;
     }
 
-    public void setModelImage(String modelImage) {
-        this.modelImage = modelImage;
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -128,5 +109,19 @@ public class ModelM implements Parcelable, Serializable {
         }
         dest.writeString(modelDescription);
         dest.writeString(modelImage);
+        dest.writeInt(quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "ModelM{" +
+                "modelId=" + modelId +
+                ", modelTitle='" + modelTitle + '\'' +
+                ", modelPrice=" + modelPrice +
+                ", modelDescription='" + modelDescription + '\'' +
+                ", modelImage='" + modelImage + '\'' +
+                ", quantity=" + quantity +
+                '}';
     }
 }
+
